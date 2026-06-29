@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>history.scrollRestoration = 'manual';</script>
+<title>Happy 21st Birthday, My Love</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --maroon: #5c1f2e;
+    --maroon-deep: #3d1320;
+    --blush: #f3dfe0;
+    --paper: #fdf6ee;
+    --paper-edge: #e9d7c3;
+    --ink: #4a2530;
+    --gold: #c9986a;
+
+    img{
+  max-width:100%;
+  height:auto;
+  display:block;
+}
+  }
+  *{box-sizing:border-box;}
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    font-family:'Cormorant Garamond', serif;
+    color:var(--ink);
+    background: radial-gradient(circle at 50% 0%, #7a2d3f 0%, var(--maroon) 45%, var(--maroon-deep) 100%);
+    background-attachment:fixed;
+  }
+
+  section{
+    min-height:100vh;
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    padding:60px 20px;
+    overflow:hidden;
+  }
+
+  /* ---------- MUSIC BUTTON ---------- */
+  .music-btn{
+    position:fixed;
+    bottom:24px;
+    right:24px;
+    z-index:999;
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.12);
+    border:1px solid rgba(251,231,224,0.35);
+    color:#fbe7e0;
+    font-size:1.1rem;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    backdrop-filter:blur(6px);
+    transition:background 0.2s ease, transform 0.2s ease;
+  }
+  .music-btn:hover{ background:rgba(255,255,255,0.22); transform:scale(1.08); }
+  .music-btn.playing{ background:rgba(231,132,154,0.25); }
+
+  /* tap-to-start overlay */
+  .tap-overlay{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    background:rgba(40,10,18,0.72);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    backdrop-filter:blur(4px);
+  }
+  .tap-overlay h2{
+    font-family:'Caveat', cursive;
+    font-size:2.8rem;
+    color:#fbe7e0;
+    margin:0 0 10px;
+    text-align:center;
+  }
+  .tap-overlay p{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    color:#e7c3c9;
+    font-size:1.1rem;
+    text-align:center;
+  }
+  .tap-overlay .tap-heart{
+    font-size:3.5rem;
+    margin-bottom:20px;
+    animation:pulse 1.3s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ transform:scale(1); }
+    50%{ transform:scale(1.15); }
+  }
+
+  /* ---------- HERO ---------- */
+  .hero h1{
+    font-family:'Caveat', cursive;
+    font-size:4.4rem;
+    color:#fbe7e0;
+    text-align:center;
+    margin:0;
+    text-shadow:0 4px 18px rgba(0,0,0,0.4);
+    opacity:0;
+    transform:translateY(20px);
+    animation:riseIn 1.1s ease forwards 0.2s;
+  }
+  .hero p{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    color:#e7c3c9;
+    font-size:1.3rem;
+    text-align:center;
+    margin-top:8px;
+    opacity:0;
+    transform:translateY(20px);
+    animation:riseIn 1.1s ease forwards 0.6s;
+  }
+  .hearts-float{ position:absolute; inset:0; pointer-events:none; }
+  .hearts-float span{
+    position:absolute;
+    bottom:-40px;
+    color:rgba(251,231,224,0.35);
+    font-size:1.4rem;
+    animation:floatUp linear infinite;
+  }
+  @keyframes floatUp{ to{ transform:translateY(-110vh) rotate(20deg); opacity:0; } }
+  @keyframes riseIn{ to{ opacity:1; transform:translateY(0); } }
+  .scroll-cue{
+    position:absolute;
+    bottom:36px;
+    left:50%;
+    transform:translateX(-50%);
+    color:#e7c3c9;
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:0.95rem;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    opacity:0.8;
+    animation:bob 2s ease-in-out infinite;
+  }
+  .scroll-cue svg{ width:18px; height:18px; }
+  @keyframes bob{
+    0%,100%{ transform:translate(-50%,0); }
+    50%{ transform:translate(-50%,8px); }
+  }
+
+  /* ---------- CAKE ---------- */
+  .cake-section h2{
+    font-family:'Caveat', cursive;
+    font-size:2.6rem;
+    color:#fbe7e0;
+    text-align:center;
+    margin:0 0 30px;
+    opacity:0;
+    transform:translateY(16px);
+    transition:opacity 0.9s ease, transform 0.9s ease;
+  }
+  .cake-section.in-view h2{ opacity:1; transform:translateY(0); }
+  .cake-wrap{
+    width:100%;
+    max-width:380px;
+    opacity:0;
+    transform:translateY(40px) scale(0.92);
+    transition:opacity 1s ease, transform 1s cubic-bezier(.2,.8,.2,1);
+  }
+  .cake-section.in-view .cake-wrap{ opacity:1; transform:translateY(0) scale(1); }
+  .flame{ transform-origin:center bottom; animation:flicker 1.4s ease-in-out infinite; }
+  .flame:nth-child(2){ animation-delay:0.2s; }
+  @keyframes flicker{
+    0%,100%{ transform:scaleY(1) scaleX(1); }
+    50%{ transform:scaleY(1.15) scaleX(0.9); }
+  }
+  .wish-text{
+    margin-top:26px;
+    font-family:'Caveat', cursive;
+    font-size:1.6rem;
+    color:#f3dfe0;
+    text-align:center;
+    opacity:0;
+    transition:opacity 1.2s ease 0.4s;
+  }
+  .cake-section.in-view .wish-text{ opacity:1; }
+
+  /* ---------- COLLAGE ---------- */
+  .collage-section{ align-items:stretch; padding-top:70px; }
+.collage-section h2{
+  font-family:'Caveat', cursive;
+  font-size:2.6rem;
+  color:#fbe7e0;
+  text-align:center;
+  margin:0 0 40px;
+  opacity:0;
+  transform:translateY(16px);
+  transition:opacity 0.9s ease, transform 0.9s ease;
+  width:100%;
+}
+.collage-section.in-view h2{ opacity:1; transform:translateY(0); }
+
+.collage-layout{
+  display:flex;
+  flex-direction:row;
+  align-items:flex-start;
+  gap:40px;
+  max-width:1100px;
+  width:100%;
+  margin:0 auto;
+  padding:0 20px;
+}
+.collage{
+  width:100%;
+  max-width:520px;
+  flex-shrink:0;
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:22px 16px;
+}
+.collage-message{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  opacity:0;
+  transform:translateX(30px);
+  transition:opacity 1s ease 0.4s, transform 1s ease 0.4s;
+}
+.collage-section.in-view .collage-message{ opacity:1; transform:translateX(0); }
+.collage-message h3{
+  font-family:'Caveat', cursive;
+  font-size:2rem;
+  color:#fbe7e0;
+  margin:0 0 16px;
+}
+.collage-message p{
+  font-family:'Cormorant Garamond', serif;
+  font-style:italic;
+  font-size:1.15rem;
+  color:#f3dfe0;
+  line-height:1.9;
+  margin:0;
+}
+
+@media(max-width:768px){
+  .collage-layout{
+    flex-direction:column;
+    align-items:center;
+  }
+  .collage{
+    grid-template-columns:repeat(2, 1fr);
+    gap:26px 16px;
+    max-width:100%;
+  }
+  .collage-message{
+    text-align:center;
+    transform:translateY(20px);
+  }
+  .collage-section.in-view .collage-message{ transform:translateY(0); }
+}
+  .collage-item{
+    background:transparent;
+    border:none;
+    box-shadow:none;
+    padding:0;
+    opacity:0;
+    transform:translateY(50px);
+    transition:opacity 0.8s ease, transform 0.8s cubic-bezier(.2,.8,.2,1);
+  }
+  .collage-section.in-view .collage-item{ opacity:1; transform:translateY(0); }
+  .collage-item:hover{ transform:translateY(-6px) !important; box-shadow:0 20px 40px rgba(0,0,0,0.4); }
+  .photo-frame{
+    background:#faf8f4;
+    width:100%;
+    aspect-ratio:1/1.18;
+    border:8px solid #faf8f4;
+    border-bottom-width:26px;
+    box-shadow:0 8px 16px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.2);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#a99080;
+    overflow:hidden;
+  }
+  .photo-frame svg{ width:38%; opacity:0.55; }
+  .photo-frame img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    filter:grayscale(1) contrast(1.05) brightness(1.02);
+    display:block;
+  }
+  .collage-caption{ display:none; }
+
+  /* ---------- GIFT ---------- */
+  .gift-section h2{
+    font-family:'Caveat', cursive;
+    font-size:2.6rem;
+    color:#fbe7e0;
+    text-align:center;
+    margin:0 0 36px;
+    opacity:0;
+    transform:translateY(16px);
+    transition:opacity 0.9s ease, transform 0.9s ease;
+  }
+  .gift-section.in-view h2{ opacity:1; transform:translateY(0); }
+  .gift-stage{
+    position:relative;
+    width:240px;
+    height:240px;
+    opacity:0;
+    transform:translateY(40px) scale(0.9);
+    transition:opacity 1s ease, transform 1s cubic-bezier(.2,.8,.2,1);
+  }
+  .gift-section.in-view .gift-stage{ opacity:1; transform:translateY(0) scale(1); }
+  .gift-box{
+    position:absolute;
+    inset:0;
+    cursor:pointer;
+    transition:transform 0.4s cubic-bezier(.34,1.56,.64,1), opacity 0.4s ease;
+  }
+  .gift-box:hover{ transform:scale(1.06) rotate(-2deg); }
+  .gift-box.opened{ transform:scale(0.3) translateY(40px); opacity:0; pointer-events:none; }
+  .gift-box svg{ width:100%; height:100%; }
+  .gift-tap-hint{
+    margin-top:14px;
+    text-align:center;
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:0.95rem;
+    color:#e7c3c9;
+    opacity:0.8;
+    transition:opacity 0.4s ease;
+  }
+  .gift-tap-hint.hidden{ opacity:0; }
+  .yes-reveal{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:0;
+    transform:scale(0.4);
+    transition:opacity 0.5s ease, transform 0.5s cubic-bezier(.34,1.56,.64,1);
+    pointer-events:none;
+  }
+  .yes-reveal.show{ opacity:1; transform:scale(1); }
+  .yes-reveal span{
+    font-family:'Caveat', cursive;
+    font-size:5rem;
+    font-weight:700;
+    color:#fbe7e0;
+    text-shadow:0 4px 20px rgba(0,0,0,0.4);
+  }
+  .burst-hearts{ position:absolute; inset:-60px; pointer-events:none; }
+  .burst-hearts span{ position:absolute; top:50%; left:50%; color:#e7849a; font-size:1.4rem; opacity:0; }
+  .burst-hearts.go span{ animation:burstOut 1.4s ease-out forwards; }
+  @keyframes burstOut{
+    0%{ opacity:1; transform:translate(-50%,-50%) scale(0.4) rotate(0deg); }
+    100%{ opacity:0; transform:translate(calc(-50% + var(--bx)), calc(-50% + var(--by))) scale(1.1) rotate(var(--br)); }
+  }
+
+  @media (max-width:1024px){
+  .collage-layout{
+    gap:24px;
+  }
+  .collage{
+    max-width:420px;
+    grid-template-columns:repeat(3, 1fr);
+  }
+}
+
+@media (max-width:768px){
+  .collage-layout{
+    flex-direction:column;
+    align-items:center;
+    padding:0 16px;
+  }
+  .collage{
+    max-width:100%;
+    grid-template-columns:repeat(3, 1fr);
+    gap:16px 12px;
+  }
+  .collage-message{
+    text-align:center;
+    transform:translateY(20px);
+    padding:0 10px;
+  }
+  .collage-section.in-view .collage-message{
+    transform:translateY(0);
+  }
+  .collage-message h3{
+    font-size:1.7rem;
+  }
+  .collage-message p{
+    font-size:1.05rem;
+  }
+  .gift-stage{
+    width:180px;
+    height:180px;
+  }
+  .cake-wrap{
+    max-width:280px;
+  }
+}
+
+@media (max-width:480px){
+  .hero h1{ font-size:2.6rem; }
+  .hero p{ font-size:1.1rem; }
+  .collage{
+    grid-template-columns:repeat(2, 1fr);
+    gap:14px 10px;
+  }
+  .collage-message h3{ font-size:1.5rem; }
+  .collage-message p{ font-size:1rem; line-height:1.7; }
+  .cake-section h2,
+  .collage-section h2,
+  .gift-section h2{
+    font-size:2rem;
+  }
+  .wish-text{ font-size:1.3rem; }
+  .gift-stage{
+    width:150px;
+    height:150px;
+  }
+  .music-btn{
+    bottom:16px;
+    right:16px;
+    width:40px;
+    height:40px;
+  }
+  section{
+    padding:50px 16px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- tap to start overlay -->
+<div class="tap-overlay" id="tapOverlay">
+  <div class="tap-heart">♥</div>
+  <h2>Happy Birthday, My Tinoy</h2>
+  <p>Tap to open</p>
+</div>
+
+<!-- music toggle button -->
+<button class="music-btn" id="musicBtn" title="Toggle music">♪</button>
+
+<!-- hidden audio -->
+<audio id="bgMusic" loop>
+  <source src="nastelbom-happy-birthday-471481.mp3" type="audio/mpeg">
+</audio>
+<audio id="bgMusic2" loop>
+  <source src="balisong (mp3cut.net).mp3" type="audio/mpeg">
+</audio>
+
+
+<section class="hero">
+  <div class="hearts-float" id="heartsFloat"></div>
+  <h1>Happy Birthday, My Tinoy</h1>
+  <p> Celebrating the special day of my sweetest boy! </p>
+  
+  <div class="scroll-cue">
+    <span>LY</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+  </div>
+</section>
+
+<section class="cake-section" id="cakeSection">
+  <h2>let's make a wish</h2>
+  <div class="cake-wrap">
+    <svg viewBox="0 0 300 260" width="100%">
+      <ellipse cx="150" cy="232" rx="120" ry="14" fill="rgba(0,0,0,0.3)"/>
+      <rect x="55" y="150" width="190" height="70" rx="6" fill="#7a3b4a"/>
+      <rect x="55" y="150" width="190" height="14" fill="#945468"/>
+      <rect x="40" y="115" width="220" height="45" rx="6" fill="#9a5468"/>
+      <rect x="40" y="115" width="220" height="12" fill="#b97388"/>
+      <rect x="70" y="80" width="160" height="40" rx="6" fill="#b97388"/>
+      <rect x="70" y="80" width="160" height="11" fill="#d8a0ae"/>
+      <circle cx="90" cy="150" r="5" fill="#fbe7e0"/>
+      <circle cx="130" cy="150" r="5" fill="#fbe7e0"/>
+      <circle cx="170" cy="150" r="5" fill="#fbe7e0"/>
+      <circle cx="210" cy="150" r="5" fill="#fbe7e0"/>
+      <circle cx="105" cy="115" r="5" fill="#fbe7e0"/>
+      <circle cx="150" cy="115" r="5" fill="#fbe7e0"/>
+      <circle cx="195" cy="115" r="5" fill="#fbe7e0"/>
+      <g font-family="Caveat, cursive" font-size="34" fill="#fbe7e0" text-anchor="middle">
+        <text x="150" y="105">21</text>
+      </g>
+      <g>
+        <rect x="108" y="55" width="5" height="26" fill="#f3dfe0"/>
+        <path class="flame" d="M110.5 36c5 6 5 12 0 18c-5-6-5-12 0-18z" fill="#e8923f"/>
+      </g>
+      <g>
+        <rect x="187" y="55" width="5" height="26" fill="#f3dfe0"/>
+        <path class="flame" d="M189.5 36c5 6 5 12 0 18c-5-6-5-12 0-18z" fill="#e8923f"/>
+      </g>
+    </svg>
+  </div>
+  <p class="wish-text">Wishing you a celebration as wonderful as you are<br><br>
+     May God keep you safe, healthy, strong and genuinely happy, especially on the things you love to do<br><br> &hearts;</p>
+</section>
+
+<section class="collage-section" id="collageSection">
+  <h2></h2>
+  <div class="collage-layout">
+    <div class="collage" id="collageGrid"></div>
+    <div class="collage-message">
+      <h3>To My Sweetest Man</h3>
+      <p>
+       Happy happy birthday, Justin. The first word that comes in my heart writing this message is "Thank You".
+Thank you for coming into my life, at first I didn't expect that we'll have this relationship that we have now, but looking at us today,
+I can tell that this is my favorite unexpected blessing that ever happened to me, which is having you, Tinoy.
+Happy birthday ulit hehe. First time natin mag celebrate ng birthday together, and I'm looking forward to sharing more birthdays with you.
+Now that I have you by my side, I want you to know that you will always have me too. Sana po 'wag kang magbago, kung ano at paano kita nagustuhan, sana hindi po mawala 'yon.
+Marami kang pinakita sa akin na first time ko naranasan at naramdaman, pag naalala ko yung first meet natin haha ang cute at ang ganda kasi sa simbahan tayo nagsimula.
+Maybe God put us together for a reason, and God gave me you as one of my answered prayers. Habang buhay akong magpapasalamat dahil dumating ka sa buhay ko, sana patuloy tayong gabayan ng Panginoon
+sa nasimulan natin. Huwag nating kalimutan na laging magpasalamat at magtiwala sa plano ng Diyos. Happy birthday ulit, Justin. I love you. &hearts;
+        
+        
+        
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="gift-section" id="giftSection">
+  <h2>Open Your Gift, Tinoy...</h2>
+  <div class="gift-stage" id="giftStage">
+    <div class="gift-box" id="giftBox">
+      <svg viewBox="0 0 200 200">
+        <rect x="30" y="90" width="140" height="90" fill="#9a3b52"/>
+        <rect x="30" y="90" width="140" height="14" fill="#7a2d3f"/>
+        <rect x="92" y="90" width="16" height="90" fill="#e7849a"/>
+        <rect x="20" y="65" width="160" height="30" rx="4" fill="#b9526b"/>
+        <rect x="92" y="65" width="16" height="30" fill="#e7849a"/>
+        <path d="M100 65c-10-30-45-30-45-5c0 12 20 5 45 5z" fill="#e7849a"/>
+        <path d="M100 65c10-30 45-30 45-5c0 12-20 5-45 5z" fill="#e7849a"/>
+      </svg>
+    </div>
+    <div class="burst-hearts" id="burstHearts"></div>
+    <div class="yes-reveal" id="yesReveal"><span>YES!</span></div>
+  </div>
+  <p class="gift-tap-hint" id="giftHint">tap the gift to open it</p>
+</section>
+
+<script>
+const placeholderSVG = `<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="52" height="52" rx="2"/><circle cx="22" cy="22" r="6"/><path d="M6 46l14-14 10 10 12-16 16 20"/></svg>`;
+
+const collageItems = [
+  { slot:1,  img:'images/7f6d5456-5c2a-4401-9f88-01d8c7e82ab7.jpg' },
+  { slot:2,  img:'images/174c487f-e8c5-4cc7-87fb-3d349f77aec7.jpg' },
+  { slot:3,  img:'images/9034ed96-8c4b-49b1-9eae-319756bae54b.jpg' },
+  { slot:4,  img:'images/acea81c5-d693-4b00-8f52-0b5870e75219.jpg' },
+  { slot:5,  img:'images/e6cbb5e6-50d3-479f-98ad-e89e068c96d1.jpg' },
+  { slot:6,  img:'images/f0fb2454-2dee-4175-bcf6-d989973e7034.jpg' },
+  { slot:7,  img:'images/0d48f3f6-073f-461e-95f2-61ea101de0b8.jpg' },
+  { slot:8,  img:'images/IMG_1247.jpg' },
+  { slot:9,  img:'images/IMG_1506.jpg' },
+  { slot:10, img:'images/IMG_1507.jpg' },
+  { slot:11, img:'images/IMG_1512.jpg' },
+  { slot:12, img:'images/IMG_1522_(copy).jpg' },
+  { slot:13, img:'images/IMG_1528.jpg' },
+  { slot:14, img:'images/IMG_1527.jpg' },
+  { slot:15, img:'images/IMG_1529.jpg' },
+  { slot:16, img:'images/IMG_1530.jpg' }
+];
+
+const grid = document.getElementById('collageGrid');
+collageItems.forEach((item, idx) => {
+  const div = document.createElement('div');
+  div.className = 'collage-item';
+  div.style.transitionDelay = (idx * 0.06) + 's';
+  div.innerHTML = `<div class="photo-frame" data-photo-slot="${item.slot}"><img src="${item.img}" alt=""></div>`;
+  grid.appendChild(div);
+});
+
+const heartsFloat = document.getElementById('heartsFloat');
+for(let i=0;i<10;i++){
+  const s = document.createElement('span');
+  s.textContent = '♥';
+  s.style.left = Math.random()*100 + '%';
+  s.style.animationDuration = (8 + Math.random()*8) + 's';
+  s.style.animationDelay = (Math.random()*8) + 's';
+  s.style.fontSize = (1 + Math.random()*1.2) + 'rem';
+  heartsFloat.appendChild(s);
+}
+
+// ---------- MUSIC ----------
+const bgMusic  = document.getElementById('bgMusic');
+const musicBtn = document.getElementById('musicBtn');
+const tapOverlay = document.getElementById('tapOverlay');
+let musicPlaying = false;
+let musicStopped = false; // once stopped by scroll, don't auto-restart
+
+tapOverlay.addEventListener('click', () => {
+  tapOverlay.style.opacity = '0';
+  tapOverlay.style.transition = 'opacity 0.5s ease';
+  setTimeout(() => tapOverlay.style.display = 'none', 500);
+  bgMusic.volume = 0.3;
+  bgMusic.play().then(() => {
+    musicPlaying = true;
+    musicBtn.textContent = '♪';
+    musicBtn.classList.add('playing');
+  }).catch(() => {});
+});
+
+musicBtn.addEventListener('click', () => {
+  const bgMusic2 = document.getElementById('bgMusic2');
+  if(musicPlaying){
+    bgMusic.pause();
+    bgMusic2.pause();
+    musicPlaying = false;
+    musicStopped = true;
+    musicBtn.textContent = '♩';
+    musicBtn.classList.remove('playing');
+  } else {
+    // Resume whichever song is relevant
+    const activeMusic = bgMusic.currentTime > 0 && !bgMusic.ended ? bgMusic : bgMusic2;
+    activeMusic.play().then(() => {
+      musicPlaying = true;
+      musicStopped = false;
+      musicBtn.textContent = '♪';
+      musicBtn.classList.add('playing');
+    }).catch(() => {});
+  }
+});
+
+// ---------- GIFT BOX ----------
+const giftBox    = document.getElementById('giftBox');
+const yesReveal  = document.getElementById('yesReveal');
+const burstHearts = document.getElementById('burstHearts');
+const giftHint   = document.getElementById('giftHint');
+
+function spawnBurstHearts(){
+  burstHearts.innerHTML = '';
+  for(let i=0;i<18;i++){
+    const s = document.createElement('span');
+    s.textContent = '♥';
+    const angle = (Math.PI*2*i)/18 + Math.random()*0.3;
+    const dist  = 90 + Math.random()*70;
+    s.style.setProperty('--bx', Math.cos(angle)*dist + 'px');
+    s.style.setProperty('--by', Math.sin(angle)*dist + 'px');
+    s.style.setProperty('--br', (Math.random()*360-180) + 'deg');
+    s.style.left = '50%';
+    s.style.top  = '50%';
+    s.style.fontSize = (1 + Math.random()*1.1) + 'rem';
+    s.style.animationDelay = (Math.random()*0.15) + 's';
+    burstHearts.appendChild(s);
+  }
+  burstHearts.classList.remove('go');
+  void burstHearts.offsetWidth;
+  burstHearts.classList.add('go');
+}
+
+let giftOpened = false;
+giftBox.addEventListener('click', () => {
+  if(giftOpened) return;
+  giftOpened = true;
+  giftBox.classList.add('opened');
+  giftHint.classList.add('hidden');
+  spawnBurstHearts();
+  setTimeout(() => yesReveal.classList.add('show'), 200);
+});
+
+// ---------- SCROLL OBSERVER ----------
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.classList.add('in-view');
+
+      // Stop music when collage comes into view
+// Switch to second song when collage comes into view
+if(entry.target.id === 'collageSection' && !musicStopped){
+  const bgMusic2 = document.getElementById('bgMusic2');
+  // Fade out first song
+  let vol = bgMusic.volume;
+  const fade = setInterval(() => {
+    vol = Math.max(0, vol - 0.05);
+    bgMusic.volume = vol;
+    if(vol <= 0){
+      clearInterval(fade);
+      bgMusic.pause();
+      bgMusic.volume = 0.55;
+      musicPlaying = false;
+      // Start second song
+     bgMusic2.volume = 0;
+bgMusic2.play().then(() => {
+  musicPlaying = true;
+  musicBtn.classList.add('playing');
+  musicBtn.textContent = '♪';
+
+  // Fade in over 10 seconds
+  const targetVol = 0.55;
+  const steps = 100;
+  const interval = 10000 / steps; // 100ms per step
+  const increment = targetVol / steps;
+  let currentVol = 0;
+
+  const fadeIn = setInterval(() => {
+    currentVol = Math.min(targetVol, currentVol + increment);
+    bgMusic2.volume = currentVol;
+    if(currentVol >= targetVol) clearInterval(fadeIn);
+  }, interval);
+
+}).catch(() => {});
+    }
+  }, 80);
+}
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.cake-section, .collage-section, .gift-section').forEach(el => observer.observe(el));
+window.scrollTo({ top: 0, behavior: 'instant' });
+</script>
+
+</body>
+</html>
